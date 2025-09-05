@@ -159,10 +159,11 @@ get_tty_geometry(Port) when is_port(Port) ->
 	_ ->
 	    error
     end;
+get_tty_geometry(undefined) ->
+    {80,24};
 get_tty_geometry(user) ->
-    {ok,W} = io:columns(),
-    {ok,H} = io:rows(),
-    {W, H}.
+    TTY = erlang:whereis(standard_io),
+    get_tty_geometry(TTY).
 
 get_unicode_state(Port) ->
     case (catch port_control(Port,?CTRL_OP_GET_UNICODE_STATE,[])) of
